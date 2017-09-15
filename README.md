@@ -1,2 +1,5 @@
 # x-bandymai
+
+[![Build Status](https://travis-ci.org/rmisev/x-bandymai.svg?branch=master)](https://travis-ci.org/rmisev/x-bandymai)
+
 GitHub sąvybių bandymai
