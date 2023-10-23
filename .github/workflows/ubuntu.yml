@@ -1,0 +1,27 @@
+name: Ubuntu
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: clang++ C++17
+            cxx_compiler: clang++
+            cxx_standard: 17
+
+          - name: g++ C++17
+            cxx_compiler: g++
+            cxx_standard: 17
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: cmake
+      run: cmake -S . -B build -DCMAKE_CXX_COMPILER=${{ matrix.cxx_compiler }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_standard }}
+    - name: build
+      run: cmake --build build --config Release
+    - name: run
+      run: build/bandymas
