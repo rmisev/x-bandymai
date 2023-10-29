@@ -10,20 +10,27 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     env:
+      TEST_DEPLOY: ${{ github.ref == 'refs/heads/main' }}
       TEST_DOCS_REPOSITORY: rmisev/test-docs
       TEST_DOCS_DIR: main
     steps:
       - uses: actions/checkout@v4
 
       # Deploy
+      - name: Has ${{ env.TEST_DOCS_REPOSITORY }} gh-pages branch?
+        if: env.TEST_DEPLOY
+        run: echo "TEST_CHECKOUT=$(git ls-remote --heads https://github.com/$TEST_DOCS_REPOSITORY.git refs/heads/gh-pages)" >> "$GITHUB_ENV"
+
       - name: Checkout ${{ env.TEST_DOCS_REPOSITORY }}
         uses: actions/checkout@v4
+        if: env.TEST_DEPLOY && env.TEST_CHECKOUT
         with:
           repository: ${{ env.TEST_DOCS_REPOSITORY }}
           ref: gh-pages
           path: build-docs
 
       - name: Prepare directory
+        if: env.TEST_DEPLOY
         run: |
           mkdir -p build-docs
           rm -rf build-docs/.git
@@ -35,6 +42,7 @@ jobs:
 
       - name: Deploy to ${{ env.TEST_DOCS_REPOSITORY }}
         uses: JamesIves/github-pages-deploy-action@v4
+        if: env.TEST_DEPLOY
         with:
           ssh-key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           repository-name: ${{ env.TEST_DOCS_REPOSITORY }}
