@@ -16,10 +16,10 @@ jobs:
       - uses: actions/checkout@v4
 
       # Deploy
-      - name: Checkout $TEST_DOCS_REPOSITORY
+      - name: Checkout ${{ env.TEST_DOCS_REPOSITORY }}
         uses: actions/checkout@v4
         with:
-          repository: $TEST_DOCS_REPOSITORY
+          repository: ${{ env.TEST_DOCS_REPOSITORY }}
           ref: gh-pages
           path: build-docs
 
@@ -28,14 +28,14 @@ jobs:
           mkdir -p build-docs
           rm -rf build-docs/.git
           rm -rf build-docs/common
-          rm -rf build-docs/$TEST_DOCS_DIR
+          rm -rf build-docs/${{ env.TEST_DOCS_DIR }}
           cp -r doc/html build-docs/common
-          mv doc/html build-docs/$TEST_DOCS_DIR
+          mv doc/html build-docs/${{ env.TEST_DOCS_DIR }}
           cp doc/index.html build-docs
 
-      - name: Deploy to $TEST_DOCS_REPOSITORY
+      - name: Deploy to ${{ env.TEST_DOCS_REPOSITORY }}
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           ssh-key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          repository-name: $TEST_DOCS_REPOSITORY
+          repository-name: ${{ env.TEST_DOCS_REPOSITORY }}
           folder: build-docs
