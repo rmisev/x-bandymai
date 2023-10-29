@@ -9,11 +9,19 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy
+      - name: Deploy 1
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           ssh-key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           repository-name: rmisev/test-docs
           target-folder: docs/main
+          branch: main
+          folder: docs
+      - name: Deploy 2
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          ssh-key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          repository-name: rmisev/test-docs
+          target-folder: docs/main-2
           branch: main
           folder: docs
