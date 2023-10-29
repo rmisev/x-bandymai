@@ -11,19 +11,27 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy 1
+
+      # Deploy
+      - name: Checkout rmisev/test-docs
+        uses: actions/checkout@v4
+        with:
+          repository: rmisev/test-docs
+          ref: main # or gh-pages
+          sparse-checkout: docs # only if main branch
+          path: build-docs
+
+      - name: Prepare directory
+        run: |
+          rm -rf build-docs/docs/main
+          mv doc/html build-docs/docs/main
+          cp doc/index.html build-docs/docs
+
+      - name: Deploy to rmisev/test-docs
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           ssh-key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           repository-name: rmisev/test-docs
-          target-folder: docs/main
+          target-folder: docs
           branch: main
-          folder: docs
-      - name: Deploy 2
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          ssh-key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          repository-name: rmisev/test-docs
-          target-folder: docs/main-2
-          branch: main
-          folder: docs
+          folder: build-docs/docs
