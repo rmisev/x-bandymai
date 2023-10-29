@@ -9,29 +9,33 @@ jobs:
       contents: write
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
+    env:
+      TEST_DOCS_REPOSITORY: rmisev/test-docs
+      TEST_DOCS_DIR: main
     steps:
       - uses: actions/checkout@v4
 
       # Deploy
-      - name: Checkout rmisev/test-docs
+      - name: Checkout $TEST_DOCS_REPOSITORY
         uses: actions/checkout@v4
         with:
-          repository: rmisev/test-docs
-          ref: main # or gh-pages
-          sparse-checkout: docs # only if main branch
+          repository: $TEST_DOCS_REPOSITORY
+          ref: gh-pages
           path: build-docs
 
       - name: Prepare directory
         run: |
-          rm -rf build-docs/docs/main
-          mv doc/html build-docs/docs/main
-          cp doc/index.html build-docs/docs
+          mkdir -p build-docs
+          rm -rf build-docs/.git
+          rm -rf build-docs/common
+          rm -rf build-docs/$TEST_DOCS_DIR
+          cp -r doc/html build-docs/common
+          mv doc/html build-docs/$TEST_DOCS_DIR
+          cp doc/index.html build-docs
 
-      - name: Deploy to rmisev/test-docs
+      - name: Deploy to $TEST_DOCS_REPOSITORY
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           ssh-key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          repository-name: rmisev/test-docs
-          target-folder: docs
-          branch: main
-          folder: build-docs/docs
+          repository-name: $TEST_DOCS_REPOSITORY
+          folder: build-docs
