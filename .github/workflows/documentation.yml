@@ -5,8 +5,6 @@ on: [push, pull_request]
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     env:
@@ -15,6 +13,13 @@ jobs:
       TEST_DOCS_DIR: main
     steps:
       - uses: actions/checkout@v4
+
+      - name: Variables
+        run: |
+          echo "GITHUB_SHA: $GITHUB_SHA"
+          echo "GITHUB_REF: $GITHUB_REF"
+          echo github.ref: ${{ github.ref }}
+          echo github.ref_name: ${{ github.ref_name }}
 
       # Deploy
       - name: Has ${{ env.TEST_DOCS_REPOSITORY }} gh-pages branch?
