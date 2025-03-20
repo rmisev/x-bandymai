@@ -10,6 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Compress source files
+        run: zip -rj src/archyvas.zip src -i *.cpp *.h
+
       - name: Upload assets
         run: gh release upload ${{ github.ref_name }} src/*.*
         env:
