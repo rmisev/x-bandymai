@@ -1,0 +1,24 @@
+name: Windows
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        include:
+          - name: g++ C++17
+            generator: Ninja
+            cxx_standard: 17
+            cmake_options: "-DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release"
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: cmake
+      run: cmake -S . -B build -G "${{ matrix.generator }}" -DCMAKE_CXX_STANDARD=${{ matrix.cxx_standard }} ${{ matrix.cmake_options }}
+    - name: build
+      run: cmake --build build --config Release
+    - name: run
+      run: build/bandymas
