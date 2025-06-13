@@ -13,11 +13,13 @@ jobs:
             generator: Ninja
             cxx_standard: 17
             cmake_options: "-DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release"
+            cmd: build/bandymas
 
           - name: VS 2022 C++17
             generator: "Visual Studio 17 2022"
             cxx_standard: 17
             cmake_options: "-A x64"
+            cmd: build/Release/bandymas
 
     steps:
     - uses: actions/checkout@v4
@@ -26,4 +28,4 @@ jobs:
     - name: build
       run: cmake --build build --config Release
     - name: run
-      run: build/bandymas
+      run: ${{ matrix.cmd }}
